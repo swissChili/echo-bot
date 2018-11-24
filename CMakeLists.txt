@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 14)
 add_subdirectory(lib/discordpp)
 add_subdirectory(lib/rest-curlpp)
 add_subdirectory(lib/websocket-websocketpp)
+add_subdirectory(lib/framework)
 
 set(SOURCE_FILES main.cc)
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
@@ -17,6 +18,7 @@ INCLUDE_DIRECTORIES(
         ${discordpp_SOURCE_DIR}
         ${discordpp-rest-curlpp_SOURCE_DIR}
         ${discordpp-websocket-websocketpp_SOURCE_DIR}
+        ${discordpp-framework_SOURCE_DIR}
         ${json_SOURCE_DIR}
 )
 

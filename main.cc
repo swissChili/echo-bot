@@ -8,6 +8,7 @@ namespace asio = boost::asio;
 #include <discordpp/bot.hh>
 #include <discordpp/rest-curlpp.hh>
 #include <discordpp/websocket-websocketpp.hh>
+#include <discordpp/framework.hh>
 
 //#include <lib/nlohmannjson/src/json.hpp>
 //#include <nlohmann/json.hpp>
@@ -42,40 +43,12 @@ int main() {
             std::make_shared<discordpp::WebsocketWebsocketPPModule>(aios, token)
     );
 
-    bot.addHandler("MESSAGE_CREATE", [](discordpp::Bot* bot, json msg){
-        //std::cout << bot->me_.dump(4) << '\n';
-        //std::cout << msg.dump() << '\n';
-        bool mentioned = false;
-        for(auto mention : msg["mentions"]) {
-            if(mention["id"] == bot->me_["id"]){
-                mentioned = true;
-                break;
-            }
-        }
-        if(mentioned){
-            std::string mentioncode = "<@" + bot->me_["id"].get<std::string>() + ">";
-            std::string content = msg["content"];
-            while(content.find(mentioncode + ' ') != std::string::npos) {
-                content = content.substr(0, content.find(mentioncode + ' ')) + content.substr(content.find(mentioncode + ' ') + (mentioncode + ' ').size());
-            }
-            while(content.find(mentioncode) != std::string::npos) {
-                content = content.substr(0, content.find(mentioncode)) + content.substr(content.find(mentioncode) + mentioncode.size());
-            }
-            bot->call(
-                    "/channels/" + msg["channel_id"].get<std::string>() + "/messages",
-                    {{"content", content}},
-                    "POST"
-            );
-            bot->send(3, {
-                    {"game", {
-                        {"name", "with " + msg["author"]["username"].get<std::string>()},
-                        {"type", 0}
-                    }},
-                    {"status", "online"},
-                    {"afk", false},
-                    {"since", "null"}
-            });
-        }
+    discordpp::Framework framework(&bot);
+
+    framework.prompt = "--";
+    // will reply to --hi with "Hello!"
+    framework.setCommand("hi", [&](std::string hi, json msg){
+        framework.messageReply(msg, "Hello!");
     });
 
     bot.addHandler("PRESENCE_UPDATE", [](discordpp::Bot*, json) {

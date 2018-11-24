@@ -7,3 +7,6 @@
 [submodule "lib/rest-curlpp"]
 	path = lib/rest-curlpp
 	url = https://github.com/DiscordPP/rest-curlpp.git
+[submodule "lib/framework"]
+	path = lib/framework
+	url = git@github.com:swissChili/discordpp-framework.git
